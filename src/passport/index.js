@@ -1,16 +1,13 @@
 import passport from 'passport';
-import mongoose from 'mongoose';
 
-import local from './local.js';
-import google from './google.js';
-import facebook from './facebook.js';
-import twitter from './twitter.js';
-import github from './github.js';
+import local from './local';
+import google from './google';
+import facebook from './facebook';
+import github from './github';
 
 export default () => {
-  passport.use(local);
-  passport.use(google);
-  passport.use(facebook);
-  passport.use(twitter);
-  passport.use(github);
+	passport.use(local);
+	passport.use(google);
+	passport.use(facebook);
+	passport.use(github);
 };

@@ -1,13 +1,17 @@
 import mongoose, { Schema } from 'mongoose';
 
-const user = mongoose.model('User', new Schema({
-    name: String,
-    username: {
-        type: String,
-        lowercase: true,
-        unique: true
-    },
-    password: String
+const User = mongoose.model('User', new Schema({
+	name: { type: String, default: '' },
+	email: { type: String, default: '' },
+	username: { type: String, default: '' },
+	provider: { type: String, default: '' },
+	hashed_password: { type: String, default: '' },
+	salt: { type: String, default: '' },
+	authToken: { type: String, default: '' },
+	facebook: Object,
+	twitter: Object,
+	github: Object,
+	google: Object,
 }));
 
-export default user;
+export default User;

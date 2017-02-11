@@ -1,44 +1,39 @@
-'use strict';
+import { Strategy } from 'passport-facebook';
+import config from './config';
+import User from './../models/user';
 
-/**
- * Module dependencies.
- */
+export default new Strategy({
+	clientID: config.facebook.clientID,
+	clientSecret: config.facebook.clientSecret,
+	callbackURL: config.facebook.callbackURL,
+	profileFields: ['emails']
+}, (accessToken, refreshToken, profile, done) => {
+	const options = {
+		$or: [
+			{ 'facebook.id': profile.id },
+			{ email: profile.emails[0].value }
+		]
+	};
 
-const mongoose = require('mongoose');
-const FacebookStrategy = require('passport-facebook').Strategy;
-import config from './config.js';
-const User = mongoose.model('User');
+	User.findOne(options, (err, user) => {
+		if (err) return done(err);
 
-/**
- * Expose
- */
+		if (!user) {
+			const newUser = new User({
+				name: profile.displayName,
+				email: profile.emails[0].value,
+				username: profile.username || profile.emails[0].value,
+				provider: 'facebook',
+				facebook: profile._json,
+				authToken: accessToken
+			});
 
-module.exports = new FacebookStrategy({
-    clientID: config.facebook.clientID,
-    clientSecret: config.facebook.clientSecret,
-    callbackURL: config.facebook.callbackURL
-  },
-  function (accessToken, refreshToken, profile, done) {
-    const options = {
-      criteria: { 'facebook.id': profile.id }
-    };
-    User.load(options, function (err, user) {
-      if (err) return done(err);
-      if (!user) {
-        user = new User({
-          name: profile.displayName,
-          email: profile.emails[0].value,
-          username: profile.username,
-          provider: 'facebook',
-          facebook: profile._json
-        });
-        user.save(function (err) {
-          if (err) console.log(err);
-          return done(err, user);
-        });
-      } else {
-        return done(err, user);
-      }
-    });
-  }
-);
+			newUser.save(err => {
+				if (err) console.log(err);
+				return done(err, user);
+			});
+		} else {
+			return done(err, user);
+		}
+	});
+});

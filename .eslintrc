@@ -16,6 +16,8 @@
         "semi": "off",
         "consistent-return": "warn",
         "no-param-reassign": "warn",
-        "linebreak-style": "off"
+        "linebreak-style": "off",
+        "space-before-function-paren": "off",
+        "func-names": "warn"
     }
 }

@@ -1,29 +1,16 @@
-const mongoose = require('mongoose');
-const LocalStrategy = require('passport-local').Strategy;
-import User from './../models/user.js';
+import { Strategy } from 'passport-local';
+import User from './../models/user';
 
-/**
- * Expose
- */
+export default new Strategy({
+	usernameField: 'email',
+	passwordField: 'password'
+}, (email, password, done) => {
+	User.findOne({ email }, (err, user) => {
+		if (err) return done(err);
+		if (!user) {
+			return done(null, false, { message: 'Unknown user' });
+		}
 
-module.exports = new LocalStrategy({
-    usernameField: 'email',
-    passwordField: 'password'
-  },
-  function (email, password, done) {
-    const options = {
-      criteria: { email: email },
-      select: 'name username email hashed_password salt'
-    };
-    User.load(options, function (err, user) {
-      if (err) return done(err);
-      if (!user) {
-        return done(null, false, { message: 'Unknown user' });
-      }
-      if (!user.authenticate(password)) {
-        return done(null, false, { message: 'Invalid password' });
-      }
-      return done(null, user);
-    });
-  }
-);
+		return done(null, user);
+	});
+});
