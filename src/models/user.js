@@ -6,7 +6,6 @@ const User = mongoose.model('User', new Schema({
 	username: { type: String, default: '' },
 	provider: { type: String, default: '' },
 	hashed_password: { type: String, default: '' },
-	salt: { type: String, default: '' },
 	authToken: { type: String, default: '' },
 	facebook: Object,
 	twitter: Object,

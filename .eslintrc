@@ -13,11 +13,12 @@
         "arrow-parens": "off",
         "one-var": "off",
         "no-tabs": "off",
-        "semi": "off",
+        "semi": "error",
         "consistent-return": "warn",
         "no-param-reassign": "warn",
         "linebreak-style": "off",
         "space-before-function-paren": "off",
-        "func-names": "warn"
+        "func-names": "warn",
+        "radix": "off"
     }
 }

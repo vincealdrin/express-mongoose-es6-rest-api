@@ -10,7 +10,6 @@ export default new Strategy({
 		if (!user) {
 			return done(null, false, { message: 'Unknown user' });
 		}
-
 		return done(null, user);
 	});
 });

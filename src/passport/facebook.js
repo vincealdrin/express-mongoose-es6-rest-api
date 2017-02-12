@@ -1,11 +1,11 @@
 import { Strategy } from 'passport-facebook';
-import config from './config';
+import { facebook } from './config';
 import User from './../models/user';
 
 export default new Strategy({
-	clientID: config.facebook.clientID,
-	clientSecret: config.facebook.clientSecret,
-	callbackURL: config.facebook.callbackURL,
+	clientID: facebook.clientID,
+	clientSecret: facebook.clientSecret,
+	callbackURL: facebook.callbackURL,
 	profileFields: ['emails']
 }, (accessToken, refreshToken, profile, done) => {
 	const options = {
@@ -14,7 +14,6 @@ export default new Strategy({
 			{ email: profile.emails[0].value }
 		]
 	};
-
 	User.findOne(options, (err, user) => {
 		if (err) return done(err);
 

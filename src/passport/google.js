@@ -1,11 +1,11 @@
 import { OAuth2Strategy } from 'passport-google-oauth';
-import config from './config';
+import { google } from './config';
 import User from './../models/user';
 
 export default new OAuth2Strategy({
-	clientID: config.google.clientID,
-	clientSecret: config.google.clientSecret,
-	callbackURL: config.google.callbackURL
+	clientID: google.clientID,
+	clientSecret: google.clientSecret,
+	callbackURL: google.callbackURL
 }, (accessToken, refreshToken, profile, done) => {
 	const options = {
 		$or: [
