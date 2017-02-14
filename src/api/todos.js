@@ -47,10 +47,29 @@ export default resource({
 	},
 
 	/** GET / - List all entities */
-	index({ params }, res) {
-		Todo.find({})
-			.then(todos => res.json(todos))
-			.catch(err => res.status(500).send(err));
+	index({ params, query: { select, sort, offset, page, limit } }, res) {
+		// add queries = sort, filter, limit, offset, likes, regex, total-count
+		// Todo.find()
+		// 	.count((err, totalCount) => res.header('X-Total-Count', totalCount))
+		// 	.then(() => {
+		// 		Todo.find({})
+		// 			.count((err, queryTotalCount) => res.header('X-Total-Query-Count', queryTotalCount))
+		// 			.then(() => {
+		// 				Todo.find({})
+		// 					.then(todos => {
+		// 						res.json(todos);
+		// 					})
+		// 			})
+		// 	})
+		// 	.catch(err => res.status(500).send(err));
+		const paginateOption = {
+
+		};
+		Todo.paginate({}, paginateOption)
+			.then(({ docs, total }) => {
+				res.header('X-Total-Count', total);
+				res.json(docs);
+			});
 	},
 
 	/** POST / - Create a new entity */
