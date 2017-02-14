@@ -6,7 +6,7 @@ import { JWT_SECRET } from './main.json';
 import User from './../models/user';
 
 const localLogin = new LocalStrategy((username, password, done) => {
-	User.findOne({ username }, (err, user) => {
+	User.findOne({ username }, { password: false }, (err, user) => {
 		if (err) return done(err);
 		if (!user) {
 			return done(null, false, { message: 'Unknown user.' });
@@ -19,12 +19,12 @@ const jwtOption = {
 	jwtFromRequest: ExtractJwt.fromAuthHeader(),
 	secretOrKey: JWT_SECRET,
 };
-const jwtLogin = new JwtStrategy(jwtOption, ({ id }, done) => {
-	User.findById(id, (err, user) => {
+const jwtAuth = new JwtStrategy(jwtOption, ({ username }, done) => {
+	User.findOne({ username }, { password: false }, (err, user) => {
 		if (err) return done(err);
 		return done(null, user);
 	});
 });
 
 passport.use(localLogin);
-passport.use(jwtLogin);
+passport.use(jwtAuth);

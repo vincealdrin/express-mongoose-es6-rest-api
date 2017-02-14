@@ -22,6 +22,7 @@ app.use(cors({
 	exposedHeaders: config.corsHeaders
 }));
 
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({
 	limit: config.bodyLimit
 }));
@@ -31,9 +32,6 @@ app.use(compression({
 	memLevel: 9
 }));
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 app.use(passport.initialize());
 
 // connect to db
@@ -42,7 +40,7 @@ initializeDb(db => {
 	app.use(middleware({ config, db }));
 
 	// api router
-	app.use('/api', passport.authenticate('jwt'), api({ config, db }));
+	app.use('/api', passport.authenticate('jwt', { session: false }), api({ config, db }));
 
 	// auth router
 	app.use('/auth', auth);

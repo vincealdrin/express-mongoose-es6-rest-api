@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from './../config/main.json';
 
 /**	Creates a callback that proxies node callback style arguments to an Express Response object.
  *	@param {express.Response} res	Express HTTP Response
@@ -24,9 +26,19 @@ export const toRes = (res, status = 200) => (err, thing) => {
  *	@example
  *		const newUserInfo = setUserInfo(req.body);
  */
-export const setUserInfo = ({ username, password, name, email }) => ({
+export const setUserInfo = ({ username, first_name, last_name, email }) => ({
 	username,
-	password,
-	name,
+	first_name,
+	last_name,
 	email,
 });
+
+/**	Generates JSON Web Token for the user.
+ *	@param {object} user	User's info
+ *
+ */
+const jwtSignOption = {
+	expiresIn: '5 days',
+	issuer: 'VNC'
+};
+export const generateToken = user => jwt.sign(user, JWT_SECRET, jwtSignOption);

@@ -14,14 +14,14 @@ export default (req, res) => {
 
 				newUser.save()
 					.then(() => {
-						success({ user: newUserInfo });
+						success(null, { user: newUserInfo });
 					})
 					.catch(err => {
-						fail({ err });
+						fail(err);
 					});
 				return;
 			}
 			fail({ error: 'User already exists.' });
 		})
-		.catch(err => fail({ err }));
+		.catch(fail);
 }
