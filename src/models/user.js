@@ -13,7 +13,7 @@ const User = new Schema({
 	twitter: Object,
 	github: Object,
 	google: Object
-});
+}, { versionKey: false });
 
 User.pre('save', function(next) {
 	const user = this;
@@ -23,10 +23,8 @@ User.pre('save', function(next) {
 
 	bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
 		if (err) next(err);
-
-		bcrypt.hash(user.password, salt, null, (err, hash) => {
-			if (err) next(err);
-
+		bcrypt.hash(user.password, salt, null, (bcryptErr, hash) => {
+			if (bcryptErr) next(bcryptErr);
 			user.password = hash;
 			next();
 		});

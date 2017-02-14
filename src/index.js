@@ -17,7 +17,7 @@ app.server = http.createServer(app);
 // logger
 app.use(morgan('dev'));
 
-// 3rd party middleware
+// 3rd party middlewares
 app.use(cors({
 	exposedHeaders: config.corsHeaders
 }));
@@ -47,7 +47,7 @@ initializeDb(db => {
 
 	app.server.listen(process.env.PORT || config.port);
 
-	console.log(`Started on port ${app.server.address().port}`);
+	console.log(`Running on port ${app.server.address().port}`);
 });
 
 export default app;
