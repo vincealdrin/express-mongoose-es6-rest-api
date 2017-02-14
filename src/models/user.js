@@ -1,16 +1,44 @@
 import mongoose, { Schema } from 'mongoose';
+import bcrypt from 'bcrypt-nodejs';
 
-const User = mongoose.model('User', new Schema({
-	name: { type: String, default: '' },
-	email: { type: String, default: '' },
+const User = new Schema({
+	first_name: { type: String, default: '' },
+	last_name: { type: String, default: '' },
+	email: { type: String, default: '', unique: true },
 	username: { type: String, default: '' },
 	provider: { type: String, default: '' },
-	hashed_password: { type: String, default: '' },
-	authToken: { type: String, default: '' },
+	password: { type: String, default: '' },
+	// role: { type: String, default: '' },
 	facebook: Object,
 	twitter: Object,
 	github: Object,
-	google: Object,
-}));
+	google: Object
+});
 
-export default User;
+User.pre('save', function(next) {
+	const user = this;
+	const SALT_ROUNDS = 10;
+
+	if (!user.isModified('password')) return next();
+
+	bcrypt.genSalt(SALT_ROUNDS, (err, salt) => {
+		if (err) next(err);
+
+		bcrypt.hash(user.password, salt, null, (err, hash) => {
+			if (err) next(err);
+
+			user.password = hash;
+			next();
+		});
+	});
+});
+
+User.methods.comparePassword = function(candidatePassword, cb) {
+	const user = this;
+	bcrypt.compare(candidatePassword, user.password, (err, isMatch) => {
+		if (err) return cb(err);
+		cb(null, isMatch);
+	});
+}
+
+export default mongoose.model('User', User);

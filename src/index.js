@@ -1,43 +1,55 @@
+import http from 'http';
 import express from 'express';
-import mongoose from 'mongoose';
-import passport from 'passport';
 import cors from 'cors';
-import path from 'path';
+import morgan from 'morgan';
+import compression from 'compression';
 import bodyParser from 'body-parser';
-
-import passportConfig from './passport';
-import router from './router';
+import passport from 'passport';
+import initializeDb from './db';
+import middleware from './middleware';
+import api from './api';
+import auth from './auth';
+import config from './config/main.json';
 
 const app = express();
+app.server = http.createServer(app);
 
-app.use(express.static(path.join(__dirname, 'public')));
+// logger
+app.use(morgan('dev'));
 
+// 3rd party middleware
 app.use(cors({
-	exposedHeaders: ['Link']
+	exposedHeaders: config.corsHeaders
 }));
 
 app.use(bodyParser.json({
-	limit: '100kb'
+	limit: config.bodyLimit
 }));
+
+app.use(compression({
+	level: 9,
+	memLevel: 9
+}));
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(passport.initialize());
 
-const listen = () => {
-	passportConfig();
-	router(app);
-	app.listen(process.env.PORT || 3000, function() {
-		console.log(`Running on port ${this.address().port}`);
-	});
-};
+// connect to db
+initializeDb(db => {
+	// internal middleware
+	app.use(middleware({ config, db }));
 
-const connectDb = () => {
-	const options = {};
-	return mongoose.connect('mongodb://localhost/todo', options).connection;
-};
+	// api router
+	app.use('/api', passport.authenticate('jwt'), api({ config, db }));
 
-connectDb()
-	.on('error', console.log)
-	.on('disconnect', connectDb)
-	.on('open', listen);
+	// auth router
+	app.use('/auth', auth);
+
+	app.server.listen(process.env.PORT || config.port);
+
+	console.log(`Started on port ${app.server.address().port}`);
+});
 
 export default app;
