@@ -1,7 +1,5 @@
 {
   "name": "express-es6-rest-api",
-  "version": "0.3.0",
-  "description": "Starter project for an ES6 RESTful Express API",
   "main": "dist",
   "scripts": {
     "dev": "nodemon -w src --exec \"babel-node src --presets es2015,stage-0\"",
@@ -24,8 +22,6 @@
       "no-unused-vars": 1
     }
   },
-  "repository": "developit/express-es6-rest-api",
-  "author": "Jason Miller <jason@developit.ca>",
   "license": "MIT",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -45,8 +41,7 @@
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
     "request": "^2.79.0",
-    "resource-router-middleware": "^0.6.0",
-    "xml2js": "^0.4.17"
+    "resource-router-middleware": "^0.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
