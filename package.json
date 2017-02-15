@@ -45,7 +45,8 @@
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",
     "request": "^2.79.0",
-    "resource-router-middleware": "^0.6.0"
+    "resource-router-middleware": "^0.6.0",
+    "xml2js": "^0.4.17"
   },
   "devDependencies": {
     "babel-cli": "^6.9.0",
